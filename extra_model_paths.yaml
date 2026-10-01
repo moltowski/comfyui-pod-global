@@ -1,0 +1,24 @@
+# 1. local : copies faites au démarrage par preload_models.sh (rapide).
+local:
+  base_path: /models
+  is_default: true
+  diffusion_models: diffusion_models
+  text_encoders: text_encoders
+  clip: text_encoders
+  vae: vae
+  loras: loras
+  checkpoints: checkpoints
+  upscale_models: upscale_models
+
+# 2. global volume, en secours : un modèle absent de PRELOAD_MODELS reste utilisable,
+#    mais il est lu directement sur le volume (lent : plusieurs minutes pour un gros modèle).
+#    Le lien /gv est posé par post_start.sh (/workspace ou /workspace-global).
+global:
+  base_path: /gv/models
+  diffusion_models: diffusion_models
+  text_encoders: text_encoders
+  clip: text_encoders
+  vae: vae
+  loras: loras
+  checkpoints: checkpoints
+  upscale_models: upscale_models
