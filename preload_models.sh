@@ -2,7 +2,8 @@
 # Copie du global volume vers le disque local (/models) les modèles demandés.
 #   PRELOAD_MODELS="krea qwen21"                   -> presets de /opt/model_presets.txt
 #   PRELOAD_MODELS="krea vae/autre.safetensors"     -> on peut mélanger presets et chemins
-#   PRELOAD_MODELS="none"                           -> ne copie que loras/
+#   PRELOAD_MODELS="none" (ou vide)                 -> ne copie que loras/
+#   Séparateur : espace ou virgule ("qwen21,krea" marche aussi).
 # 4 copies en parallèle. Log : /models/preload.log ; fin : /models/.preload_done
 set -u
 SRC="$1/models"
@@ -12,7 +13,8 @@ LOG="$DST/preload.log"
 : > "$LOG"
 
 items=("loras/")
-for w in ${PRELOAD_MODELS:-none}; do
+LIST="${PRELOAD_MODELS:-none}"
+for w in ${LIST//,/ }; do
   [ "$w" = none ] && continue
   hits=$(awk -v p="$w" '$1==p {print $2}' /opt/model_presets.txt)
   if [ -n "$hits" ]; then items+=($hits); else items+=("$w"); fi

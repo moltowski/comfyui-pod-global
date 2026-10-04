@@ -1,8 +1,8 @@
 #!/bin/bash
-# Appelé par le /start.sh du template RunPod, après SSH et Jupyter.
+# Appelé par le /start.sh du template RunPod, AVANT SSH (c'est son hook /pre_start.sh).
 # 1. trouve le global volume (/workspace-global s'il y a aussi un network volume, sinon /workspace)
 # 2. copie en local les modèles de PRELOAD_MODELS
-# 3. lance ComfyUI sur 0.0.0.0:8188 (en arrière-plan : start.sh doit pouvoir finir)
+# 3. lance ComfyUI sur 0.0.0.0:8188 (en arrière-plan : start.sh doit continuer et démarrer SSH)
 # Logs : /models/preload.log, /comfyui.log
 
 (

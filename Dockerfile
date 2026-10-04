@@ -4,11 +4,11 @@
 #   - le global volume est du stockage objet : pas de chmod +x, pas de .so chargeable, pas de git
 #     -> ComfyUI, son venv et les custom nodes sont DANS l'image ;
 #   - ComfyUI qui lit les modèles directement sur le volume = 12 min au 1er rendu Qwen 2.1
-#     -> au démarrage, post_start.sh copie en local les modèles listés dans PRELOAD_MODELS
+#     -> au démarrage, pre_start.sh copie en local les modèles listés dans PRELOAD_MODELS
 #        (~146 Mo/s), puis lance ComfyUI sur ces copies locales.
 #
 # Base = template officiel RunPod PyTorch 2.8 (CUDA 12.8, OK Blackwell), celui du test du 29/09 :
-# il garde SSH + Jupyter et exécute /post_start.sh à la fin de son /start.sh.
+# il garde SSH et son /start.sh exécute /pre_start.sh (pas /post_start.sh : vérifié le 04/10 sur un pod).
 
 ARG BASE=runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404
 FROM ${BASE}
@@ -53,8 +53,8 @@ COPY custom_nodes/ /opt/ComfyUI/custom_nodes/
 COPY extra_model_paths.yaml /opt/ComfyUI/extra_model_paths.yaml
 COPY model_presets.txt /opt/model_presets.txt
 COPY preload_models.sh /opt/preload_models.sh
-COPY post_start.sh /post_start.sh
-RUN chmod +x /opt/preload_models.sh /post_start.sh
+COPY pre_start.sh /pre_start.sh
+RUN chmod +x /opt/preload_models.sh /pre_start.sh
 
 # 6. Vérification au build : torch n'a pas bougé, et ComfyUI + tous les nodes s'importent.
 RUN /opt/venv-comfy/bin/python -c "import torch; print('torch', torch.__version__)" && \
