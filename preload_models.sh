@@ -24,12 +24,12 @@ copy_one() {
   local rel="$1" t0 t1 sz
   t0=$(date +%s)
   if [[ "$rel" == */ ]]; then
-    mkdir -p "$DST/$rel" && cp -r "$SRC/$rel." "$DST/$rel" 2>/dev/null
+    mkdir -p "$DST/$rel" && cp -r "$SRC/$rel." "$DST/$rel" || { echo "ECHEC $rel" >> "$LOG"; return; }
   else
     [ -f "$SRC/$rel" ] || { echo "ABSENT $rel" >> "$LOG"; return; }
     mkdir -p "$DST/$(dirname "$rel")"
     [ -f "$DST/$rel" ] && [ "$(stat -c %s "$DST/$rel")" = "$(stat -c %s "$SRC/$rel")" ] && { echo "DEJA $rel" >> "$LOG"; return; }
-    cp "$SRC/$rel" "$DST/$rel.part" && mv "$DST/$rel.part" "$DST/$rel"
+    cp "$SRC/$rel" "$DST/$rel.part" && mv "$DST/$rel.part" "$DST/$rel" || { rm -f "$DST/$rel.part"; echo "ECHEC $rel" >> "$LOG"; return; }
   fi
   t1=$(date +%s); sz=$(du -sm "$DST/$rel" 2>/dev/null | cut -f1)
   echo "OK $rel ${sz} Mo $((t1-t0))s" >> "$LOG"
