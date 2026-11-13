@@ -1,13 +1,19 @@
 # Presets pour PRELOAD_MODELS : <preset> <chemin relatif sous models/ du global volume>.
-# Un chemin qui finit par / = tout le dossier. loras/ est toujours copié (petit, ~1 Go).
-qwen21 diffusion_models/qwen_image_2.1_bf16.safetensors
-qwen21 text_encoders/qwen3vl_8b_bf16.safetensors
-qwen21 vae/qwen_image_2.1_vae_bf16.safetensors
+# Un chemin qui finit par / = tout le dossier. Les LoRA se règlent à part (PRELOAD_LORAS, cf. README).
+# Un pod = une famille de modèles (pod Krea, pod H3-Image, pod H3 vidéo) : pas de mélange sur un même pod.
 
-krea diffusion_models/finepornV4TURBOFP8INT8_v4Bf16.safetensors
-krea text_encoders/qwen3VL4BAbliteratedComfyui_v10.safetensors
-krea vae/wan_2.1_vae.safetensors
+# Krea 2 = recette prod : FinePorn v5 BF16 + encodeur Qwen3-VL 4B fp8 + VAE Qwen Image (~31 Go).
+krea diffusion_models/finepornV5_v5BF16.safetensors
+krea text_encoders/qwen3vl_4b_fp8_scaled.safetensors
+krea vae/qwen_image_vae.safetensors
 
+# MiniMax H3-Image : DiT bf16 (2x plus rapide que l'INT8, banc du 10/11) + encodeur Qwen3-VL 32B partagé avec H3 vidéo
+# (~68 Go). Pic VRAM ~68 Go, RAM ~70 Go : RTX PRO 6000 (96 Go) avec >= 80 Go de RAM.
+h3image diffusion_models/minimax_h3_image_pruned_bf16.safetensors
+h3image text_encoders/qwen3vl_32b_minimax_h3_int8_convrot.safetensors
+h3image vae/minimax_h3_image_vae_fp16.safetensors
+
+# MiniMax H3 vidéo (ref2va + fl2va, ~76 Go).
 h3 diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors
 h3 diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors
 h3 text_encoders/qwen3vl_32b_minimax_h3_int8_convrot.safetensors
